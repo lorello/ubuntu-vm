@@ -66,12 +66,23 @@ install_salt()
 
 install_puppet()
 {
+   echo "==> Installing Puppet"
+   apt-get purge rubygems -qqy
+   apt-get install -qqy ruby1.9 pkg-config git-core build-essential make vim git-core
+   update-alternatives --set ruby /usr/bin/ruby1.9.1
+   gem install puppet librarian-puppet ruby-augeas --no-ri --no-rdoc
+   apt-get purge -qqy pkg-config build-essential make
+}
+
+install_puppet_disabled()
+{
     echo "==> Installing Puppet"
     . /etc/lsb-release
 
     DEB_NAME=puppetlabs-release-${DISTRIB_CODENAME}.deb
     wget http://apt.puppetlabs.com/${DEB_NAME}
     dpkg -i ${DEB_NAME}
+
     if [[ ${CM_VERSION:-} == 'latest' ]]; then
       echo "Installing latest Puppet version"
       apt-get install -y puppet
